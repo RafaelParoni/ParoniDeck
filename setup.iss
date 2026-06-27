@@ -17,7 +17,7 @@ AppId={{E67B1028-569A-464C-A2C3-5A546CCAD92E}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
 AppPublisher={#MyAppPublisher}
-DefaultDirName={autopf}\{#MyAppName}
+DefaultDirName={localappdata}\{#MyAppName}
 DisableProgramGroupPage=yes
 ; Onde salvar o instalador gerado (.exe)
 OutputDir=.
