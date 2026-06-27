@@ -1,0 +1,13 @@
+{
+  "name": "paronideck",
+  "version": "1.0.0",
+  "description": "Soundpad Web Remote Control",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "build:exe": "build.bat"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
+  }
+}
