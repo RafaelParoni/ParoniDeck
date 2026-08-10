@@ -1037,8 +1037,8 @@ body:not(.edit-active) .sound-card:not(.btn-nav-page):not(.sound-card-empty):act
    Media Queries para Dispositivos Móveis e Forçamento Horizontal (Sideways)
    -------------------------------------------------------------------------- */
 
-/* REQUISITO: Ocultar itens no Celular (Largura menor que 768px) */
-@media (max-width: 768px) {
+/* REQUISITO: Ocultar itens no Celular (Largura menor que 768px ou toque) */
+@media (max-width: 768px), (pointer: coarse) {
     .connection-info {
         display: none !important;
     }
@@ -1059,7 +1059,7 @@ body:not(.edit-active) .sound-card:not(.btn-nav-page):not(.sound-card-empty):act
     display: none;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (pointer: coarse) {
     .mobile-editor-overlay {
         display: none;
         position: absolute;
@@ -1188,7 +1188,7 @@ body:not(.edit-active) .sound-card:not(.btn-nav-page):not(.sound-card-empty):act
 }
 
 /* REQUISITO: Forçar rotação horizontal de lado quando o celular está em PORTRAIT (Em pé) */
-@media (max-width: 768px) and (orientation: portrait) {
+@media (max-width: 768px) and (orientation: portrait), (pointer: coarse) and (orientation: portrait) {
 
     html,
     body {
@@ -1329,6 +1329,7 @@ body:not(.edit-active) .sound-card:not(.btn-nav-page):not(.sound-card-empty):act
 
 /* REQUISITO: Celular deitado nativamente (Landscape) */
 @media (max-height: 480px) and (max-width: 900px),
+(orientation: landscape) and (max-width: 1200px) and (pointer: coarse),
 (orientation: landscape) and (max-width: 900px) {
     body {
         padding-bottom: 0;
@@ -1644,7 +1645,7 @@ body:not(.edit-active) .sound-card:not(.btn-nav-page):not(.sound-card-empty):act
 }
 
 /* Ocultar configurações no mobile */
-@media (max-width: 768px) {
+@media (max-width: 768px), (pointer: coarse) {
     .btn-global-settings, .settings-drawer {
         display: none !important;
     }
@@ -1700,7 +1701,7 @@ body:not(.edit-active) .sound-card:not(.btn-nav-page):not(.sound-card-empty):act
     transform: scale(0.95);
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px), (pointer: coarse) {
     .mobile-actions-bar {
         display: flex;
     }

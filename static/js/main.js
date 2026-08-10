@@ -74,6 +74,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let base64ImageData = null;
     let currentFolderId = null;
 
+    // Detectar se o dispositivo é mobile/celular
+    function checkIsMobile() {
+        const uaMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+        const isNarrow = window.matchMedia('(max-width: 768px)').matches;
+        return uaMobile || isCoarse || isNarrow;
+    }
+
+    // Inicializar classe is-mobile no body
+    if (checkIsMobile()) {
+        document.body.classList.add('is-mobile');
+    }
+
     // Ícones pré-definidos para escolha no editor
     const PREDEFINED_ICONS = [
         'bell', 'megaphone', 'party-popper', 'laugh', 'frown', 
@@ -241,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Se for mobile, adiciona o botão "+" ao final de filteredSounds (sempre ativo)
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const isMobile = checkIsMobile();
         if (isMobile) {
             filteredSounds.push({
                 type: 'add-new',
@@ -688,7 +701,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Função reutilizável para abrir o editor de nova ação
     function openNewActionEditor() {
-        const isMobile = window.matchMedia('(max-width: 768px)').matches;
+        const isMobile = checkIsMobile();
         if (isMobile) {
             openMobileEditor(-1);
             return;
@@ -1065,7 +1078,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // Vincular botão de expandir
+    // Vincular botão de expandir (e colocar em tela cheia)
     if (btnExpandDeck) {
         btnExpandDeck.addEventListener('click', () => {
             const isExpanded = document.body.classList.toggle('expanded-active');
@@ -1073,15 +1086,63 @@ document.addEventListener('DOMContentLoaded', () => {
             if (isExpanded) {
                 labelExpand.textContent = 'Recolher';
                 iconExpand.setAttribute('data-lucide', 'minimize-2');
+                
+                // Solicitar tela cheia
+                try {
+                    const docEl = document.documentElement;
+                    if (docEl.requestFullscreen) {
+                        docEl.requestFullscreen();
+                    } else if (docEl.webkitRequestFullscreen) {
+                        docEl.webkitRequestFullscreen();
+                    } else if (docEl.mozRequestFullScreen) {
+                        docEl.mozRequestFullScreen();
+                    } else if (docEl.msRequestFullscreen) {
+                        docEl.msRequestFullscreen();
+                    }
+                } catch (err) {
+                    console.warn('Não foi possível entrar em tela cheia:', err.message);
+                }
             } else {
                 labelExpand.textContent = 'Expandir';
                 iconExpand.setAttribute('data-lucide', 'maximize-2');
+                
+                // Sair da tela cheia
+                try {
+                    if (document.fullscreenElement) {
+                        if (document.exitFullscreen) {
+                            document.exitFullscreen();
+                        } else if (document.webkitExitFullscreen) {
+                            document.webkitExitFullscreen();
+                        } else if (document.mozCancelFullScreen) {
+                            document.mozCancelFullScreen();
+                        } else if (document.msExitFullscreen) {
+                            document.msExitFullscreen();
+                        }
+                    }
+                } catch (err) {
+                    console.warn('Não foi possível sair da tela cheia:', err.message);
+                }
             }
             if (window.lucide) {
                 window.lucide.createIcons();
             }
         });
     }
+
+    // Monitorar evento de alteração de tela cheia do navegador para manter o estado em sincronia
+    document.addEventListener('fullscreenchange', () => {
+        const isFullscreen = document.fullscreenElement !== null;
+        const bodyHasExpanded = document.body.classList.contains('expanded-active');
+        
+        if (!isFullscreen && bodyHasExpanded) {
+            document.body.classList.remove('expanded-active');
+            labelExpand.textContent = 'Expandir';
+            iconExpand.setAttribute('data-lucide', 'maximize-2');
+            if (window.lucide) {
+                window.lucide.createIcons();
+            }
+        }
+    });
 
     // Inicializar rotação mobile (se houver preferência salva)
     let currentRotation = localStorage.getItem('mobile-rotation') || '90';
@@ -1103,6 +1164,11 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('resize', () => {
         clearTimeout(resizeTimeout);
         resizeTimeout = setTimeout(() => {
+            if (checkIsMobile()) {
+                document.body.classList.add('is-mobile');
+            } else {
+                document.body.classList.remove('is-mobile');
+            }
             renderSoundGrid();
         }, 150);
     });
